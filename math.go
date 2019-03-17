@@ -5,7 +5,7 @@ import "math"
 // SumFunc is a function definition for what Sigma calculates a sum for.
 type SumFunc func(n int) float64
 
-// Sigma sums up values represented in Σ notation.
+// Sigma sums up values as represented in Σ notation.
 func Sigma(start, end int, fn SumFunc) (sum float64) {
 	for n := start; n <= end; n++ {
 		sum += fn(n)
