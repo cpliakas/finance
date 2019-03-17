@@ -13,9 +13,9 @@ const (
 	PeriodDaily      = 365
 )
 
-// FutureValue calculate the value of a cash flow at a later date than
-// originally received.
-func FutureValue(principal, rate float64, timesPerYear, years int) float64 {
+// CompoundInterest is interest calculated on the initial principal inclusive
+// of the accumulated interest over a period of time
+func CompoundInterest(principal, rate float64, timesPerYear, years int) float64 {
 	x := 1 + (rate / float64(timesPerYear))
 	y := float64(timesPerYear * years)
 	a := principal * math.Pow(x, y)

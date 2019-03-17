@@ -6,7 +6,7 @@ import (
 	"github.com/cpliakas/finance"
 )
 
-func TestFutureValue(t *testing.T) {
+func TestCompoundInterest(t *testing.T) {
 	tests := []struct {
 		want      float64
 		principal float64
@@ -23,7 +23,7 @@ func TestFutureValue(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		have := finance.FutureValue(tt.principal, tt.rate, tt.times, tt.years)
+		have := finance.CompoundInterest(tt.principal, tt.rate, tt.times, tt.years)
 		if have != tt.want {
 			t.Errorf("have %v, want %v", have, tt.want)
 		}
