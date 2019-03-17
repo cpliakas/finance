@@ -9,18 +9,18 @@ import (
 	"github.com/spf13/viper"
 )
 
-var compoundInterestCfg *viper.Viper
+var futureValueCfg *viper.Viper
 
-var compoundInterestCmd = &cobra.Command{
-	Use:   "compound-interest",
-	Short: "Calculate an amount from a principal value and expected rate over time.",
-	Long:  ``,
+var futureValueCmd = &cobra.Command{
+	Use:     "future-value",
+	Aliases: []string{"fv"},
+	Short:   "calculates the value of a cash flow at a later date than originally received",
 	Run: func(cmd *cobra.Command, args []string) {
-		amount := finance.CompoundInterest(
-			compoundInterestCfg.GetFloat64("principal"),
-			compoundInterestCfg.GetFloat64("interest-rate"),
-			compoundInterestCfg.GetInt("times-per-year"),
-			compoundInterestCfg.GetInt("years"),
+		amount := finance.FutureValue(
+			futureValueCfg.GetFloat64("principal"),
+			futureValueCfg.GetFloat64("interest-rate"),
+			futureValueCfg.GetInt("times-per-year"),
+			futureValueCfg.GetInt("years"),
 		)
 
 		fmt.Printf("$%v\n", amount)
@@ -28,10 +28,10 @@ var compoundInterestCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(compoundInterestCmd)
-	compoundInterestCfg = initConfig()
+	rootCmd.AddCommand(futureValueCmd)
+	futureValueCfg = cliutil.InitConfig(EnvPrefix)
 
-	flags := cliutil.NewFlagger(compoundInterestCmd, compoundInterestCfg)
+	flags := cliutil.NewFlagger(futureValueCmd, futureValueCfg)
 	flags.Float64("principal", "p", 0.00, "amount of money that you have available to invest initially")
 	flags.Float64("interest-rate", "r", 0.00, "estimated annual interest rate as a decimal")
 	flags.Int("times-per-year", "t", finance.PeriodAnnual, "times per year that interest will be compounded")

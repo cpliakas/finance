@@ -12,11 +12,11 @@ import (
 var presentValueCfg *viper.Viper
 
 var presentValueCmd = &cobra.Command{
-	Use:   "present-value",
-	Short: "Calculates the present value from a desired amount and given rate over time.",
-	Long:  ``,
+	Use:     "present-value",
+	Aliases: []string{"pv"},
+	Short:   "calculates the present day value of an amount that is received at a future date",
 	Run: func(cmd *cobra.Command, args []string) {
-		principal := finance.CompoundInterest(
+		principal := finance.PresentValue(
 			presentValueCfg.GetFloat64("desired-amount"),
 			presentValueCfg.GetFloat64("interest-rate"),
 			presentValueCfg.GetInt("times-per-year"),
@@ -29,7 +29,7 @@ var presentValueCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(presentValueCmd)
-	presentValueCfg = initConfig()
+	presentValueCfg = cliutil.InitConfig(EnvPrefix)
 
 	flags := cliutil.NewFlagger(presentValueCmd, presentValueCfg)
 	flags.Float64("desired-amount", "a", 0.00, "the desired amount at the end of the time period")

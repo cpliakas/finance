@@ -8,6 +8,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+// EnvPrefix is the environment variable prefix for configuration.
+const EnvPrefix = "FINANCE"
+
 var rootCfg *viper.Viper
 
 var rootCmd = &cobra.Command{
@@ -26,9 +29,5 @@ func main() {
 }
 
 func init() {
-	rootCfg = initConfig()
-}
-
-func initConfig() *viper.Viper {
-	return cliutil.InitConfig("FINANCE")
+	rootCfg = cliutil.InitConfig(EnvPrefix)
 }
