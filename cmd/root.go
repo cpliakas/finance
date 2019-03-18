@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 
 	"github.com/cpliakas/cliutil"
@@ -30,4 +31,11 @@ func main() {
 
 func init() {
 	rootCfg = cliutil.InitConfig(EnvPrefix)
+}
+
+func printJSON(cmd *cobra.Command, v interface{}) {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "    ")
+	err := enc.Encode(v)
+	cliutil.HandleError(cmd, err)
 }

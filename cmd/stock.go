@@ -22,7 +22,7 @@ func init() {
 	stockCfg = cliutil.InitConfig(alphavantage.EnvPrefix)
 
 	flags := cliutil.NewFlagger(stockCmd, stockCfg)
-	flags.PersistentString("api-key", "a", "", "api used to authenticate requests to alpha vantage")
+	flags.PersistentString("api-key", "a", "", "api key used to authenticate requests to alpha vantage")
 }
 
 func newClient() alphavantage.Client {

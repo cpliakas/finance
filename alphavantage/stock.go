@@ -1,103 +1,24 @@
 package alphavantage
 
 import (
-	"encoding/json"
-	"net/http"
 	"net/url"
 )
 
-// EnvPrefix is the environemnt variable prefix for configuration.
-const EnvPrefix = "ALPHA_VANTAGE"
-
-// Default* constants define the defaults used in DefaultConfig.
+// Stock* constants are the valid function parameters.
 const (
-	DefaultScheme = "https"
-	DefaultHost   = "www.alphavantage.co"
+	StockIntraday      = "TIME_SERIES_INTRADAY"
+	StockDaily         = "TIME_SERIES_DAILY"
+	StockDailyAdjusted = "TIME_SERIES_DAILY_ADJUSTED"
+	StockQuote         = "GLOBAL_QUOTE"
 )
 
-// TimeSeriesIntraday are the valid functions parameters.
-const (
-	TimeSeriesIntraday = "TIME_SERIES_INTRADAY"
-	TimeSeriesDaily    = "TIME_SERIES_DAILY"
-)
-
-// Config ...
-type Config interface {
-	APIKey() string
-	Scheme() string
-	Host() string
+// Input is the interface implemented by API requests.
+type Input interface {
+	SetParameters(params *url.Values)
 }
 
-// DefaultConfig ...
-type DefaultConfig struct {
-	apiKey string
-}
-
-// APIKey implements Config.APIKey by returning the configured API key.
-func (c DefaultConfig) APIKey() string { return c.apiKey }
-
-// Scheme implements Config.Scheme by returning the default scheme.
-func (c DefaultConfig) Scheme() string { return DefaultScheme }
-
-// Host implements Config.Host by returning the default host.
-func (c DefaultConfig) Host() string { return DefaultHost }
-
-// NewDefaultConfig returns a *DefaultConfig.
-func NewDefaultConfig(apiKey string) Config {
-	return &DefaultConfig{apiKey: apiKey}
-}
-
-// Client models the URL that gets data form the Alpha Vantage API.
-type Client struct {
-	Config     Config
-	HTTPClient *http.Client
-}
-
-// NewClient returns a Client.
-func NewClient(config Config) Client {
-	return Client{
-		Config:     config,
-		HTTPClient: http.DefaultClient,
-	}
-}
-
-// StockTimeSeriesDaily ...
-func (c Client) StockTimeSeriesDaily(symbol string) (output StockTimeSeriesDailyOutput, err error) {
-	v := url.Values{}
-	v.Set("function", TimeSeriesDaily)
-	v.Set("symbol", symbol)
-	v.Set("apikey", c.Config.APIKey())
-
-	u := url.URL{
-		Scheme:   c.Config.Scheme(),
-		Host:     "www.alphavantage.co",
-		Path:     "query",
-		RawQuery: v.Encode(),
-	}
-
-	req, err := http.NewRequest(http.MethodGet, u.String(), nil)
-	if err != nil {
-		return
-	}
-
-	res, err := c.HTTPClient.Do(req)
-	if err != nil {
-		return
-	}
-
-	defer res.Body.Close()
-	err = json.NewDecoder(res.Body).Decode(&output)
-	return
-}
-
-// StockTimeSeriesDailyOutput ...
-type StockTimeSeriesDailyOutput struct {
-	MetaData   MetaData              `json:"Meta Data"`
-	TimeSeries map[string]TimeSeries `json:"Time Series (Daily)"`
-}
-
-// MetaData models ...
-type MetaData struct {
+// OutputMetaData models meta data output.
+type OutputMetaData struct {
 	Information   string `json:"1. Information"`
 	Symbol        string `json:"2. Symbol"`
 	LastRefreshed string `json:"3. Last Refreshed"`
@@ -105,11 +26,130 @@ type MetaData struct {
 	TimeZone      string `json:"5. Time Zone"`
 }
 
-// TimeSeries models ...
-type TimeSeries struct {
-	Open   string `json:"1. open"`
-	High   string `json:"2. high"`
-	Low    string `json:"3. low"`
-	Close  string `json:"4. close"`
-	Volume string `json:"5. volume"`
+// OutputMetaDataWithInterval models meta data output with an interval.
+type OutputMetaDataWithInterval struct {
+	Information   string `json:"1. Information"`
+	Symbol        string `json:"2. Symbol"`
+	LastRefreshed string `json:"3. Last Refreshed"`
+	Interval      string `json:"4. Interval"`
+	OutputSize    string `json:"5. Output Size"`
+	TimeZone      string `json:"6. Time Zone"`
+}
+
+// OutputTimeSeries models time series output.
+type OutputTimeSeries struct {
+	Open   Float64 `json:"1. open"`
+	High   Float64 `json:"2. high"`
+	Low    Float64 `json:"3. low"`
+	Close  Float64 `json:"4. close"`
+	Volume Int     `json:"5. volume"`
+}
+
+// OutputTimeSeriesAdjusted models adjusted time series output.
+type OutputTimeSeriesAdjusted struct {
+	Open             Float64 `json:"1. open"`
+	High             Float64 `json:"2. high"`
+	Low              Float64 `json:"3. low"`
+	Close            Float64 `json:"4. close"`
+	AdjustedClose    Float64 `json:"5. adjusted close"`
+	Volume           Int     `json:"6. volume"`
+	DividendAmount   Float64 `json:"7. dividend amount"`
+	SplitCoefficient Float64 `json:"8. split coefficient"`
+}
+
+// StockIntradayInput models the request sent to the TIME_SERIES_INTRADAY
+// function.
+type StockIntradayInput struct {
+	Symbol     string
+	Interval   string
+	OutputSize string
+}
+
+// SetParameters implements Input.SetParameters.
+func (i StockIntradayInput) SetParameters(params *url.Values) {
+	params.Set("function", StockIntraday)
+	params.Set("symbol", i.Symbol)
+	setOptionalParam("interval", i.Interval, params)
+	setOptionalParam("outputsize", i.OutputSize, params)
+}
+
+// StockIntradayOutput models the output of the TIME_SERIES_DAILY function.
+type StockIntradayOutput struct {
+	MetaData   OutputMetaDataWithInterval  `json:"Meta Data"`
+	Stock1Min  map[string]OutputTimeSeries `json:"Time Series (1min),omitempty"`
+	Stock5Min  map[string]OutputTimeSeries `json:"Time Series (5min),omitempty"`
+	Stock15Min map[string]OutputTimeSeries `json:"Time Series (15min),omitempty"`
+	Stock30Min map[string]OutputTimeSeries `json:"Time Series (30min),omitempty"`
+	Stock60Min map[string]OutputTimeSeries `json:"Time Series (60min),omitempty"`
+}
+
+// StockDailyInput models the request sent to the TIME_SERIES_DAILY
+// function.
+type StockDailyInput struct {
+	Symbol     string
+	OutputSize string
+}
+
+// SetParameters implements Input.SetParameters.
+func (i StockDailyInput) SetParameters(params *url.Values) {
+	params.Set("function", StockDaily)
+	params.Set("symbol", i.Symbol)
+	setOptionalParam("outputsize", i.OutputSize, params)
+}
+
+// StockDailyOutput models the output of the TIME_SERIES_DAILY function.
+type StockDailyOutput struct {
+	MetaData OutputMetaData              `json:"Meta Data"`
+	Stock    map[string]OutputTimeSeries `json:"Time Series (Daily)"`
+}
+
+// StockDailyAdjustedInput models the request sent to the
+// TIME_SERIES_DAILY_ADJUSTED function.
+type StockDailyAdjustedInput struct {
+	Symbol     string
+	OutputSize string
+}
+
+// SetParameters implements Input.SetParameters.
+func (i StockDailyAdjustedInput) SetParameters(params *url.Values) {
+	params.Set("function", StockDailyAdjusted)
+	params.Set("symbol", i.Symbol)
+	setOptionalParam("outputsize", i.OutputSize, params)
+}
+
+// StockDailyAdjustedOutput models the output of the TIME_SERIES_DAILY_ADJUSTED
+// function.
+type StockDailyAdjustedOutput struct {
+	MetaData OutputMetaData                      `json:"Meta Data"`
+	Stock    map[string]OutputTimeSeriesAdjusted `json:"Time Series (Daily)"`
+}
+
+// StockQuoteInput models the request sent to the GLOBAL_QUOTE function.
+type StockQuoteInput struct {
+	Symbol string
+}
+
+// StockQuoteOutput models the output of the GLOBAL_QUOTE function.
+type StockQuoteOutput struct {
+	GlobalQuote StockQuoteOutputGlobalQuote `json:"Global Quote"`
+}
+
+// StockQuoteOutputGlobalQuote models the output of the "Global Quote" key.
+type StockQuoteOutputGlobalQuote struct {
+	Symbol         string  `json:"01. symbol"`
+	Open           Float64 `json:"02. open"`
+	High           Float64 `json:"03. high"`
+	Low            Float64 `json:"04. low"`
+	Price          Float64 `json:"05. price"`
+	Volume         Int     `json:"06. volume"`
+	LastTradingDay string  `json:"07. latest trading day"`
+	PreviousClose  Float64 `json:"08. previous close"`
+	Change         Float64 `json:"09. change"`
+	ChangePercent  Percent `json:"10. change percent"`
+}
+
+// SetParameters implements Input.SetParameters.
+func (i StockQuoteInput) SetParameters(params *url.Values) {
+	params.Set("function", StockQuote)
+	params.Set("symbol", i.Symbol)
 }
