@@ -68,3 +68,45 @@ func TestClientStockDailyAdjusted(t *testing.T) {
 		t.Errorf("have %v, want %v", len(output.Stock), want)
 	}
 }
+
+func TestClientStockIntraday(t *testing.T) {
+
+	server := newServer("./testdata/TestClientStockIntraday.golden", t)
+	defer server.Close()
+
+	input := &alphavantage.StockIntradayInput{
+		Symbol:   "MSFT",
+		Interval: alphavantage.Interval5Min,
+	}
+
+	client := newClient(server)
+	output, err := client.StockIntraday(input)
+	if err != nil {
+		t.Fatalf("error calling endpoint: %v", err)
+	}
+
+	want := 100
+	if len(output.Stock5Min) != want {
+		t.Errorf("have %v, want %v", len(output.Stock5Min), want)
+	}
+}
+
+func TestClientStockQuote(t *testing.T) {
+
+	server := newServer("./testdata/TestClientStockQuote.golden", t)
+	defer server.Close()
+
+	input := &alphavantage.StockQuoteInput{
+		Symbol: "MSFT",
+	}
+
+	client := newClient(server)
+	output, err := client.StockQuote(input)
+	if err != nil {
+		t.Fatalf("error calling endpoint: %v", err)
+	}
+
+	if output.GlobalQuote.Symbol != input.Symbol {
+		t.Errorf("have %v, want %v", output.GlobalQuote.Symbol, input.Symbol)
+	}
+}
