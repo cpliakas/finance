@@ -1,6 +1,7 @@
 .PHONY: test
 test:
-	go test -cover -v
+	go test -v -cover ./
+	go test -v -cover ./alphavantage
 
 .PHONY: clean
 clean:

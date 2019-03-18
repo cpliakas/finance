@@ -1,55 +1,50 @@
 package alphavantage
 
 import (
-	"bytes"
-	"math"
 	"net/url"
-	"strconv"
-	"unicode"
 )
 
-// Float64 unmarshals a string to a float64.
-type Float64 float64
-
-// UnmarshalJSON implements json.UnmarshalJSON by converting a string to a
-// float64.
-func (f *Float64) UnmarshalJSON(b []byte) error {
-	b = bytes.TrimFunc(b, isQuotationMark)
-	v, err := strconv.ParseFloat(string(b), 64)
-	*f = Float64(v)
-	return err
+// Input is the interface implemented by API requests.
+type Input interface {
+	SetParameters(params *url.Values)
 }
 
-// Percent unmarshals a string to a float64 divided by 100.
-type Percent float64
-
-// UnmarshalJSON implements json.UnmarshalJSON by converting a string to a
-// float64 divided by 100.
-func (p *Percent) UnmarshalJSON(b []byte) error {
-	b = bytes.TrimFunc(b, isQuotationMark)
-	v, err := strconv.ParseFloat(string(bytes.TrimRight(b, "%")), 64)
-	*p = Percent(math.Round(v*10000) / 1000000)
-	return err
+// OutputMetaData models meta data output.
+type OutputMetaData struct {
+	Information   string `json:"1. Information"`
+	Symbol        string `json:"2. Symbol"`
+	LastRefreshed string `json:"3. Last Refreshed"`
+	OutputSize    string `json:"4. Output Size"`
+	TimeZone      string `json:"5. Time Zone"`
 }
 
-// Int unmarshals a string to an integer.
-type Int int
-
-// UnmarshalJSON implements json.UnmarshalJSON by converting a string to an
-// integer.
-func (i *Int) UnmarshalJSON(b []byte) error {
-	b = bytes.TrimFunc(b, isQuotationMark)
-	v, err := strconv.Atoi(string(b))
-	*i = Int(v)
-	return err
+// OutputMetaDataWithInterval models meta data output with an interval.
+type OutputMetaDataWithInterval struct {
+	Information   string `json:"1. Information"`
+	Symbol        string `json:"2. Symbol"`
+	LastRefreshed string `json:"3. Last Refreshed"`
+	Interval      string `json:"4. Interval"`
+	OutputSize    string `json:"5. Output Size"`
+	TimeZone      string `json:"6. Time Zone"`
 }
 
-func isQuotationMark(c rune) bool {
-	return unicode.In(c, unicode.Quotation_Mark)
+// OutputTimeSeries models time series output.
+type OutputTimeSeries struct {
+	Open   Float64 `json:"1. open"`
+	High   Float64 `json:"2. high"`
+	Low    Float64 `json:"3. low"`
+	Close  Float64 `json:"4. close"`
+	Volume Int     `json:"5. volume"`
 }
 
-func setOptionalParam(name, value string, params *url.Values) {
-	if value != "" {
-		params.Set(name, value)
-	}
+// OutputTimeSeriesAdjusted models adjusted time series output.
+type OutputTimeSeriesAdjusted struct {
+	Open             Float64 `json:"1. open"`
+	High             Float64 `json:"2. high"`
+	Low              Float64 `json:"3. low"`
+	Close            Float64 `json:"4. close"`
+	AdjustedClose    Float64 `json:"5. adjusted close"`
+	Volume           Int     `json:"6. volume"`
+	DividendAmount   Float64 `json:"7. dividend amount"`
+	SplitCoefficient Float64 `json:"8. split coefficient"`
 }
