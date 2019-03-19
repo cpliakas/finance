@@ -1,6 +1,7 @@
 package finance
 
 import (
+	"errors"
 	"math"
 )
 
@@ -27,4 +28,19 @@ func CompoundInterest(principal, rate float64, timesPerYear, years int) float64 
 func PresentValue(desiredAmount, rate float64, timesPerYear, years int) float64 {
 	p := desiredAmount / math.Pow(1+rate, float64(years))
 	return math.Round(p*100) / 100
+}
+
+// SimpleMovingAverage calculates a Simple Moving Average.
+func SimpleMovingAverage(in []float64, days int) (out []float64, err error) {
+	if len(in) < days {
+		err = errors.New("must have more data points than days")
+		return
+	}
+
+	out = make([]float64, len(in)-days+1)
+	for i := range out {
+		out[i] = SumFloat64(in[i:i+days]) / float64(days)
+	}
+
+	return
 }

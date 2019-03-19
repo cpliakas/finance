@@ -49,3 +49,19 @@ func TestPresentValue(t *testing.T) {
 		}
 	}
 }
+
+func TestSimpleMovingAverage(t *testing.T) {
+	data := []float64{1, 2, 3, 4, 5, 6}
+	want := []float64{3, 4}
+
+	have, err := finance.SimpleMovingAverage(data, 5)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if have[0] != want[0] {
+		t.Errorf("have %v, want %v", have[0], want[0])
+	}
+	if have[1] != want[1] {
+		t.Errorf("have %v, want %v", have[1], want[1])
+	}
+}

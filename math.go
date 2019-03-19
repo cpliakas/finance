@@ -2,6 +2,14 @@ package finance
 
 import "math"
 
+// SumFloat64 sums the values in a float64 slice.
+func SumFloat64(data []float64) (sum float64) {
+	for _, v := range data {
+		sum += v
+	}
+	return
+}
+
 // SumFunc is a function definition for what Sigma calculates a sum for.
 type SumFunc func(n int) float64
 
