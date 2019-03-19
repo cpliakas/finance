@@ -2,6 +2,13 @@ package finance
 
 import "math"
 
+// Round rounds a float64 to the specified precision, i.e. the number of digits
+// after the decimal point.
+func Round(num float64, precision int) float64 {
+	factor := math.Pow10(precision)
+	return math.Round(num*factor) / factor
+}
+
 // SumFloat64 sums the values in a float64 slice.
 func SumFloat64(data []float64) (sum float64) {
 	for _, v := range data {

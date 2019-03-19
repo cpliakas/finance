@@ -44,3 +44,11 @@ func SimpleMovingAverage(in []float64, days int) (out []float64, err error) {
 
 	return
 }
+
+// MonthlyMortgagePayment returns the monthy mortgage payment.
+func MonthlyMortgagePayment(amount, rate float64, years int) float64 {
+	i := rate / 12
+	n := float64(years * 12)
+	p := (amount * (i * math.Pow(1+i, n))) / (math.Pow(1+i, n) - 1)
+	return Round(p, 2)
+}

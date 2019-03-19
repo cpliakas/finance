@@ -65,3 +65,21 @@ func TestSimpleMovingAverage(t *testing.T) {
 		t.Errorf("have %v, want %v", have[1], want[1])
 	}
 }
+
+func TestMonthlyMortgagePayment(t *testing.T) {
+	tests := []struct {
+		want   float64
+		amount float64
+		rate   float64
+		years  int
+	}{
+		{1229.85, 250000, .0425, 30},
+	}
+
+	for _, tt := range tests {
+		have := finance.MonthlyMortgagePayment(tt.amount, tt.rate, tt.years)
+		if have != tt.want {
+			t.Errorf("have %v, want %v", have, tt.want)
+		}
+	}
+}
