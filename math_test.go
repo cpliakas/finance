@@ -11,10 +11,10 @@ func TestSigmaInt(t *testing.T) {
 		want  float64
 		start int
 		end   int
-		fn    finance.SumFunc
+		fn    finance.SummandFunc
 	}{
-		{10, 1, 4, finance.Sum},
-		{30, 1, 4, finance.SumSquared},
+		{10, 1, 4, finance.SummandN},
+		{30, 1, 4, finance.SummandNSquared},
 	}
 
 	for _, tt := range tests {
