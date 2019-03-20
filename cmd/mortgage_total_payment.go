@@ -7,23 +7,23 @@ import (
 	"github.com/spf13/viper"
 )
 
-var mortgageMonthlyPaymentCfg *viper.Viper
+var mortgageTotalPaymentCfg *viper.Viper
 
-var mortgageMonthlyPaymentCmd = &cobra.Command{
-	Use:   "monthly-payment",
-	Short: "calculate the monthly payment for a mortgage",
+var mortgageTotalPaymentCmd = &cobra.Command{
+	Use:   "total-payment",
+	Short: "calculate the total payment for a mortgage over its entire term",
 	Args:  mortgageCmdValidate,
 	Run: func(cmd *cobra.Command, args []string) {
 		a := mortgageCfg.GetFloat64("amount")
 		r := mortgageCfg.GetFloat64("rate")
 		y := mortgageCfg.GetInt("years")
-		p := finance.MonthlyMortgagePayment(a, r, y)
+		p := finance.TotalMortgagePayment(a, r, y)
 
 		finance.PrintlnDollars(p)
 	},
 }
 
 func init() {
-	mortgageCmd.AddCommand(mortgageMonthlyPaymentCmd)
-	mortgageMonthlyPaymentCfg = cliutil.InitConfig(EnvPrefix)
+	mortgageCmd.AddCommand(mortgageTotalPaymentCmd)
+	mortgageTotalPaymentCfg = cliutil.InitConfig(EnvPrefix)
 }

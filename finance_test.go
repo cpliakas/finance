@@ -23,7 +23,8 @@ func TestCompoundInterest(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		have := finance.CompoundInterest(tt.principal, tt.rate, tt.times, tt.years)
+		f := finance.CompoundInterest(tt.principal, tt.rate, tt.times, tt.years)
+		have := finance.Round(f, 2)
 		if have != tt.want {
 			t.Errorf("have %v, want %v", have, tt.want)
 		}
@@ -43,7 +44,8 @@ func TestPresentValue(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		have := finance.PresentValue(tt.amount, tt.rate, tt.times, tt.years)
+		f := finance.PresentValue(tt.amount, tt.rate, tt.times, tt.years)
+		have := finance.Round(f, 2)
 		if have != tt.want {
 			t.Errorf("have %v, want %v", have, tt.want)
 		}
@@ -77,7 +79,8 @@ func TestMonthlyMortgagePayment(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		have := finance.MonthlyMortgagePayment(tt.amount, tt.rate, tt.years)
+		f := finance.MonthlyMortgagePayment(tt.amount, tt.rate, tt.years)
+		have := finance.Round(f, 2)
 		if have != tt.want {
 			t.Errorf("have %v, want %v", have, tt.want)
 		}

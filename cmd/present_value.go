@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/cpliakas/cliutil"
 	"github.com/cpliakas/finance"
 	"github.com/spf13/cobra"
@@ -23,7 +21,7 @@ var presentValueCmd = &cobra.Command{
 			presentValueCfg.GetInt("years"),
 		)
 
-		fmt.Printf("$%.2f\n", principal)
+		finance.FormatDollars(principal)
 	},
 }
 
