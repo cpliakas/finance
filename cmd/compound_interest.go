@@ -12,7 +12,7 @@ import (
 var compoundInterestCfg *viper.Viper
 
 var compoundInterestCmd = &cobra.Command{
-	Use:     "compount-interest",
+	Use:     "compound-interest",
 	Aliases: []string{"ci"},
 	Short:   "interest calculated on the initial principal inclusive of the accumulated interest over a period of time",
 	Run: func(cmd *cobra.Command, args []string) {
