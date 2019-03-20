@@ -23,7 +23,7 @@ var compoundInterestCmd = &cobra.Command{
 			compoundInterestCfg.GetInt("years"),
 		)
 
-		fmt.Printf("$%v\n", amount)
+		fmt.Printf("$%.2f\n", amount)
 	},
 }
 

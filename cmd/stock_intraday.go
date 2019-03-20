@@ -45,5 +45,8 @@ func stockIntradayCmdValidate(cmd *cobra.Command, args []string) error {
 	if len(args) < 1 {
 		return errors.New("missing required argument: [SYMBOL]")
 	}
+
+	// TODO validate interval
+
 	return nil
 }

@@ -23,7 +23,7 @@ var presentValueCmd = &cobra.Command{
 			presentValueCfg.GetInt("years"),
 		)
 
-		fmt.Printf("$%v\n", principal)
+		fmt.Printf("$%.2f\n", principal)
 	},
 }
 
