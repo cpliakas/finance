@@ -12,8 +12,9 @@ import (
 var loanCfg *viper.Viper
 
 var loanCmd = &cobra.Command{
-	Use:   "loan",
-	Short: "calculate montly and total payments of loan",
+	Use:     "loan",
+	Aliases: []string{"mortgage"},
+	Short:   "calculate montly and total payments of loan",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
