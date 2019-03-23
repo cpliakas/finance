@@ -68,7 +68,7 @@ func TestSimpleMovingAverage(t *testing.T) {
 	}
 }
 
-func TestMonthlyMortgagePayment(t *testing.T) {
+func TestMonthlyLoanPayment(t *testing.T) {
 	tests := []struct {
 		want   float64
 		amount float64
@@ -79,7 +79,7 @@ func TestMonthlyMortgagePayment(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		f := finance.MonthlyMortgagePayment(tt.amount, tt.rate, tt.years)
+		f := finance.MonthlyLoanPayment(tt.amount, tt.rate, tt.years)
 		have := finance.Round(f, 2)
 		if have != tt.want {
 			t.Errorf("have %v, want %v", have, tt.want)

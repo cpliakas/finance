@@ -39,7 +39,7 @@ type SummandFunc func(n int) float64
 // Sigma sums up values as represented in Σ notation.
 //
 // Assuming that n is the index of summation, lower is the lower limit of n,
-// upper is the upper limit of, and fn is the summand being summed up.
+// upper is the upper limit of n, and fn is the summand being summed up.
 func Sigma(lower, upper int, fn SummandFunc) (sum float64) {
 	for n := lower; n <= upper; n++ {
 		sum += fn(n)

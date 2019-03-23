@@ -9,34 +9,34 @@ import (
 	"github.com/spf13/viper"
 )
 
-var mortgageCfg *viper.Viper
+var loanCfg *viper.Viper
 
-var mortgageCmd = &cobra.Command{
-	Use:   "mortgage",
-	Short: "realtime and historical global equity data",
+var loanCmd = &cobra.Command{
+	Use:   "loan",
+	Short: "calculate montly and total payments of loan",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(mortgageCmd)
-	mortgageCfg = cliutil.InitConfig(alphavantage.EnvPrefix)
+	rootCmd.AddCommand(loanCmd)
+	loanCfg = cliutil.InitConfig(alphavantage.EnvPrefix)
 
-	flags := cliutil.NewFlagger(mortgageCmd, mortgageCfg)
-	flags.PersistentFloat64("amount", "a", 0, "principal amount of the mortgage")
+	flags := cliutil.NewFlagger(loanCmd, loanCfg)
+	flags.PersistentFloat64("amount", "a", 0, "principal amount of the loan")
 	flags.PersistentFloat64("rate", "r", 0, "annual intrest rate")
 	flags.PersistentInt("years", "y", 0, "loan term in years")
 }
 
 func mortgageCmdValidate(cmd *cobra.Command, args []string) error {
-	if mortgageCfg.GetFloat64("amount") == 0 {
+	if loanCfg.GetFloat64("amount") == 0 {
 		return errors.New("missing required option: amount")
 	}
-	if mortgageCfg.GetFloat64("rate") == 0 {
+	if loanCfg.GetFloat64("rate") == 0 {
 		return errors.New("missing required option: rate")
 	}
-	if mortgageCfg.GetInt("years") == 0 {
+	if loanCfg.GetInt("years") == 0 {
 		return errors.New("missing required option: years")
 	}
 	return nil

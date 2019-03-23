@@ -43,15 +43,15 @@ func SimpleMovingAverage(in []float64, num int) (out []float64, err error) {
 	return
 }
 
-// MonthlyMortgagePayment returns the monthy mortgage payment.
-func MonthlyMortgagePayment(amount, rate float64, years int) float64 {
+// MonthlyLoanPayment returns the monthy loan payment.
+func MonthlyLoanPayment(amount, rate float64, years int) float64 {
 	i := rate / 12
 	n := float64(years * 12)
 	return (amount * (i * math.Pow(1+i, n))) / (math.Pow(1+i, n) - 1)
 }
 
-// TotalMortgagePayment returns the total mortgage payment over the whole term.
-func TotalMortgagePayment(amount, rate float64, years int) float64 {
+// TotalLoanPayment returns the total loan payment over the whole term.
+func TotalLoanPayment(amount, rate float64, years int) float64 {
 	numPayments := float64(years * 12)
-	return MonthlyMortgagePayment(amount, rate, years) * numPayments
+	return MonthlyLoanPayment(amount, rate, years) * numPayments
 }
