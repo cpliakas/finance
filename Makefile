@@ -7,6 +7,11 @@ test:
 clean:
 	rm -f finance
 
+.PHONY: install
+install:
+	go get -u ./
+	go get -u ./cmd
+
 .PHONY: build
 build: clean
 	go build -o finance ./cmd
