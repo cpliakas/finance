@@ -21,7 +21,7 @@ var presentValueCmd = &cobra.Command{
 			presentValueCfg.GetInt("years"),
 		)
 
-		finance.FormatDollars(principal)
+		finance.PrintlnDollars(principal)
 	},
 }
 
